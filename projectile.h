@@ -3,12 +3,13 @@
 #include <math.h>
 #include "gun.h"
 #include <iostream>
-#include <list>
+#include "lockylist.h"
 #include <mutex>
+
 class Projectile:public Object{
 	public:
 		mutable std::mutex mtx;
-		static std::list<Projectile*> projectiles;
+		static LockyList<Projectile*> projectiles;
 		std::list<Projectile*>::iterator it;
 		float p_angle;
 		uint32_t start_time;

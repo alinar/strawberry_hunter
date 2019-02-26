@@ -4,18 +4,20 @@
 #include "tools.h"
 #include <iostream>
 #include <mutex>
-std::list<Strawberry*> Strawberry::strawberrys;
+#include "lockylist.h"
+
+LockyList<Strawberry*> Strawberry::strawberrys;
 
 Strawberry::Strawberry(int x_in,int y_in,float vx,float vy):Object("images/Strawberry.png",x_in,y_in){
-	std::lock_guard<std::mutex> lock(mtx);
+	//std::lock_guard<std::mutex> lock(mtx);
 	speed_x = vx;
 	speed_y = vy;
 	start_time = currentTimeInMs();
 	strawberrys.push_back(this);
-                }
+	}
 
 Strawberry::~Strawberry(){
-	std::lock_guard<std::mutex> lock(mtx);
+	//std::lock_guard<std::mutex> lock(mtx);
 	Strawberry::strawberrys.remove(this);
 }
 
@@ -25,7 +27,7 @@ void Strawberry::GotShot(){
 }	
 
 bool Strawberry::Draw(){
-	std::lock_guard<std::mutex> lock(mtx);
+	//std::lock_guard<std::mutex> lock(mtx);
 	if (!active) return false; 
 	else if (PointDistance(x,y,512,512)>390  ) {
 		// touch the wall and bounce back.
@@ -42,7 +44,8 @@ bool Strawberry::Draw(){
 
 
 void Strawberry::DrawAll(){
-        std::list<Strawberry*>::iterator strawberry_it;
+        LockyList<Strawberry*>::iterator strawberry_it;
+	Strawberry::strawberrys.lock();
         for (strawberry_it = Strawberry::strawberrys.begin(); strawberry_it != Strawberry::strawberrys.end() ; ++strawberry_it){
 		if (!((*strawberry_it)->Draw()) ){
 			// delete non active strawberrys.
@@ -51,15 +54,18 @@ void Strawberry::DrawAll(){
 			delete aux;
 		}
         }
+	Strawberry::strawberrys.unlock();
 }
 
 void Strawberry::DeleteAll(){
-	std::list<Strawberry*>::iterator strawberry_it;
+	LockyList<Strawberry*>::iterator strawberry_it;
+	Strawberry::strawberrys.lock();
 	for (strawberry_it = Strawberry::strawberrys.begin(); strawberry_it != Strawberry::strawberrys.end() ; ++strawberry_it){
 		Strawberry* aux = *strawberry_it;
 		strawberry_it++;
 		delete aux;
 	}
+	Strawberry::strawberrys.unlock();
 }
 
 

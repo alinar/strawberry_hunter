@@ -12,7 +12,7 @@ enum Keys {LEFT, RIGHT, SPACE };
 // Check status of key
 bool isKeydown(Keys key);
 // Initialize game_engine and bring up window.
-void initEngine(uint32_t width, uint32_t height);
+void initEngine(const char* name,uint32_t width, uint32_t height);
 // Destroy game_engine and resources.
 void destroyEngine();
 

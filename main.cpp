@@ -4,29 +4,30 @@
 #include "projectile.h"
 #include "strawberry.h"
 #include <iostream>
-#include <list>
 #include <math.h>
 #include "tools.h"
+#include "lockylist.h"
+#include <list>
 #include <thread>
 
 bool CollisionDetection(Gun &gun){
 	while(true){
 	if (!gun.active) break;	
-	std::list<Strawberry*>::iterator strawberry_it;
-	std::list<Projectile*>::iterator projectile_it;
+	LockyList<Strawberry*>::iterator strawberry_it;
+	LockyList<Projectile*>::iterator projectile_it;
 	float dist;
+	Strawberry::strawberrys.lock();
 	for (strawberry_it = Strawberry::strawberrys.begin(); strawberry_it != Strawberry::strawberrys.end() ; ++strawberry_it){
-		(*strawberry_it)->mtx.lock();
+		Projectile::projectiles.lock();
 		for (projectile_it = Projectile::projectiles.begin(); projectile_it != Projectile::projectiles.end() ; ++projectile_it){
-			(*projectile_it)->mtx.lock();
 			dist = PointDistance((*strawberry_it)->x,(*strawberry_it)->y,(*projectile_it)->x,(*projectile_it)->y);	
 			if (dist<10.0) (*strawberry_it)->GotShot(); 
-			(*projectile_it)->mtx.unlock();
 		}
 		dist = PointDistance((*strawberry_it)->x,(*strawberry_it)->y,gun.x,gun.y);
+		Projectile::projectiles.unlock();
 		if (dist<40.0) gun.FinishGame();
-		(*strawberry_it)->mtx.unlock();
 	}
+	Strawberry::strawberrys.unlock();
 	sleep(100);	
 	}
 }
@@ -41,13 +42,16 @@ void InitScene(){
 }
 
 int main() {
-  initEngine(1024, 1024);
+  initEngine("Strawberry Hunter",1024, 1024);
   Sprite background = loadSprite("images/BackGround.png"); 
   Sprite frame    = loadSprite("images/Frame.png");
   InitScene();
   Gun gun = Gun();
-  std::thread collision_detector (CollisionDetection,std::ref(gun));
-  while (startFrame()){
+  while(true){
+	if (!startFrame()){
+		sleep(100);
+		continue;
+	}
 	drawSprite(background,0,0);
 	/***/
 	Projectile::DrawAll();
@@ -56,14 +60,18 @@ int main() {
 	/***/
 	drawSprite(frame,0,0);
 	presentFrame();
+	Strawberry::strawberrys.lock();
 	if (Strawberry::strawberrys.size()==0 || !r) {
+		Strawberry::strawberrys.unlock();
 		std::cout <<"Game Finished!\n"<<std::flush; 
 		break;
 	}
+	Strawberry::strawberrys.unlock();
        	sleep(50);
   }
+  // Wait for the thread to finish. 
+  //collision_detector.join();
   // Clean up gmae_game_engine
-  collision_detector.join();
   Projectile::DeleteAll();
   Strawberry::DeleteAll();
   destroyEngine();

@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <cstdio>
-
+#include <iostream>
 #undef main
 
 struct Engine {
@@ -18,7 +18,7 @@ struct Engine {
   } keys;
 } game_engine;
 
-void initEngine(uint32_t width, uint32_t height) {
+void initEngine(const char* name,uint32_t width, uint32_t height) {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
     exit(1);
@@ -27,7 +27,7 @@ void initEngine(uint32_t width, uint32_t height) {
     printf("Warning: Linear texture filtering not enabled!");
     exit(1);
   }
-  game_engine.window = SDL_CreateWindow("Cell Invaders", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+  game_engine.window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
   if(game_engine.window == nullptr) {
     printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
     exit(1);
@@ -134,8 +134,9 @@ bool startFrame() {
       }
     }
   }
-  if(game_engine.keys.quit)
-    return false;
+  if(game_engine.keys.quit){
+  return false;
+  }
   return true;
 }
 

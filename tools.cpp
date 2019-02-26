@@ -34,7 +34,7 @@ struct vector_f RotateVector(float angle_rad,float x,float y){
 struct vector_f BounceFromCircle(float vx, float vy,float x,float y){
 	/*speed vector after incident*/	
 	float angle; 
-	// angle of incident 		
+	// angle of incident using cross product	
 	angle = asin( (vx*(y-512) - vy*(x-512)) / (PointDistance(vx,vy,0,0)*PointDistance(x,y,512,512))  );
 	//
 	return RotateVector(2*angle,-1*vx,-1*vy);	

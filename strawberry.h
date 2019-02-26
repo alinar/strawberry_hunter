@@ -1,12 +1,12 @@
 #pragma once
 #include "object.h"
 #include <mutex>
+#include "lockylist.h"
 
 class Strawberry:public Object{
 	public:
 		mutable std::mutex mtx;
-		static  std::mutex strawberrys_mtx;
-		static std::list<Strawberry*> strawberrys;
+		static LockyList<Strawberry*> strawberrys;
 		bool active = true;
 		float speed_x  ;
 		float speed_y  ;
