@@ -6,15 +6,26 @@
 #include <mutex>
 #include "lockylist.h"
 
+Sprite Strawberry::strawberry_sprite;
+bool Strawberry::has_sprite = false;
+
 LockyList<Strawberry*> Strawberry::strawberrys;
 
-Strawberry::Strawberry(int x_in,int y_in,float vx,float vy):Object("images/Strawberry.png",x_in,y_in){
+Strawberry::Strawberry(int x_in,int y_in,float vx,float vy):Object(x_in,y_in){
 	//std::lock_guard<std::mutex> lock(mtx);
+	LoadSprite("images/Strawberry.png");
 	speed_x = vx;
 	speed_y = vy;
 	start_time = currentTimeInMs();
 	strawberrys.push_back(this);
 	}
+
+void Strawberry::LoadSprite(const char* file_name){
+        if (!Strawberry::has_sprite){
+                Strawberry::strawberry_sprite = loadSprite(file_name);
+                Strawberry::has_sprite = true;
+        }
+}
 
 Strawberry::~Strawberry(){
 	//std::lock_guard<std::mutex> lock(mtx);
@@ -38,7 +49,7 @@ bool Strawberry::Draw(){
 	uint32_t dt = currentTimeInMs() - start_time;
 	x+=speed_x*dt;
 	y+=speed_y*dt;
-	drawSprite(sprite , x-sprite.width/2 , y-sprite.height/2);
+	drawSprite(Strawberry::strawberry_sprite , x-strawberry_sprite.width/2 , y-strawberry_sprite.height/2);
 	return true;
 }
 
@@ -67,5 +78,4 @@ void Strawberry::DeleteAll(){
 	}
 	Strawberry::strawberrys.unlock();
 }
-
 

@@ -18,7 +18,7 @@ make clean
 
 ###### WHAT IS NEW IN THIS VERSION  #######
 
+for each object type only one sprite is created. too many sprites was leading to crush because they were destroyed with the object but the reference/pointer was still in used by the engine.
 
 ###### NEED TO BE FIXED  ########
 
-static lists should be used in a lock protected wrapper. One way is to wrap it in a class with protected reader/modifiers.

@@ -50,9 +50,9 @@ void initEngine(const char* name,uint32_t width, uint32_t height) {
 void destroyEngine() {
   for(uint32_t i = 0; i < game_engine.currentTexture; i++)
     SDL_DestroyTexture(game_engine.textures[i]);
-  SDL_DestroyRenderer(game_engine.renderer);
-  SDL_DestroyWindow(game_engine.window);
-  game_engine = {};
+    SDL_DestroyRenderer(game_engine.renderer);
+    SDL_DestroyWindow(game_engine.window);
+    game_engine = {};
 }
 
 Sprite loadSprite(const char *path) {

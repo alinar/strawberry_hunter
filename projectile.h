@@ -9,6 +9,8 @@
 class Projectile:public Object{
 	public:
 		mutable std::mutex mtx;
+		static Sprite projectile_sprite;
+		static bool has_sprite;
 		static LockyList<Projectile*> projectiles;
 		std::list<Projectile*>::iterator it;
 		float p_angle;
@@ -20,5 +22,6 @@ class Projectile:public Object{
 		virtual bool Draw();
 		static void DrawAll();
 		static void DeleteAll();
+		void LoadSprite(const char*);
 };
 

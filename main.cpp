@@ -47,11 +47,8 @@ int main() {
   Sprite frame    = loadSprite("images/Frame.png");
   InitScene();
   Gun gun = Gun();
-  while(true){
-	if (!startFrame()){
-		sleep(100);
-		continue;
-	}
+  std::thread collision_detector (CollisionDetection,std::ref(gun));
+  while(startFrame()){
 	drawSprite(background,0,0);
 	/***/
 	Projectile::DrawAll();
@@ -69,8 +66,9 @@ int main() {
 	Strawberry::strawberrys.unlock();
        	sleep(50);
   }
+  gun.FinishGame(); // to make collision thread finish.
   // Wait for the thread to finish. 
-  //collision_detector.join();
+  collision_detector.join();
   // Clean up gmae_game_engine
   Projectile::DeleteAll();
   Strawberry::DeleteAll();

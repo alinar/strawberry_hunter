@@ -5,6 +5,8 @@
 
 class Gun:public Object{
 	public:
+		static Sprite gun_sprite;
+		static bool has_sprite;
 		float angle = 0;
 		bool active = true;
 		Gun();
@@ -13,5 +15,6 @@ class Gun:public Object{
 		virtual bool Draw();
 		void Shoot();
 		void FinishGame();
+		void LoadSprite(const char* );
 };
 

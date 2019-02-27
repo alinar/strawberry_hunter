@@ -5,16 +5,29 @@
 #include "projectile.h"
 #include "tools.h"
 #include <iostream>
-Gun::Gun():Object("images/Gun.png",512,140){}
+
+Sprite Gun::gun_sprite;
+bool Gun::has_sprite = false;
+
+Gun::Gun():Object(512,140){
+	LoadSprite("images/Gun.png");
+}
 
 bool Gun::Draw(){
 	if (!active) return false;
 	GetKeyInput();
-	drawSpriteWithRotation(sprite,  512-sprite.width/2 , 140-sprite.height/2, angle, sprite.width/2, 512-140+sprite.height/2);
+	drawSpriteWithRotation(Gun::gun_sprite,  512-Gun::gun_sprite.width/2 , 140-Gun::gun_sprite.height/2, angle, Gun::gun_sprite.width/2, 512-140+Gun::gun_sprite.height/2);
 	struct vector_i vec = RotatePointCircle(angle,512,140, 0 , 512 - 140);
 	x = vec.x;
 	y = vec.y;
 	return true;
+}
+
+void Gun::LoadSprite(const char * file_name){
+	if (!Gun::has_sprite){
+		Gun::gun_sprite = loadSprite(file_name);
+		Gun::has_sprite = true;
+	}
 }
 
 void Gun::Rotate(float d){

@@ -5,8 +5,7 @@
 #include <math.h>
 #include <iostream>
 
-Object::Object(const char *sprite_file, float x_in, float y_in){
-	sprite = loadSprite(sprite_file);
+Object::Object( float x_in, float y_in){
 	x = x_in;
 	y = y_in;
 }
